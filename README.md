@@ -21,7 +21,7 @@
 
 ---
 
-## 👨‍💻 Trio 04
+## 👨‍💻 Trio 03
 
 | Foto / Avatar | Integrante | GitHub |
 | :---: | :--- | :--- |
