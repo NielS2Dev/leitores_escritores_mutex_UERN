@@ -19,8 +19,8 @@
 | Foto / Avatar | Integrante | GitHub |
 | :---: | :--- | :--- |
 | <img src="https://github.com/github.png" width="50"> | **Antoniel da Silva Alves** | [@seu-user](https://github me) |
-| <img src="https://github.com/github.png" width="50"> | **Geovane Guilherme do Nascimento** | [@user-geovane](#) |
-| <img src="https://github.com/github.png" width="50"> | **Sayan Bruno da Silva Soares** | [@user-sayan](#) |
+| <img src="https://github.com/github.png" width="50"> | **Geovane Guilherme do Nascimento** | [@geovane2606](https://github.com/geovane2606) |
+| <img src="https://github.com/github.png" width="50"> | **Sayan Bruno da Silva Soares** | [@sayanbruno](https://github.com/sayanbruno) |
 
 ---
 
