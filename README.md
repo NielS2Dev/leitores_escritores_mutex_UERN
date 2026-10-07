@@ -8,16 +8,16 @@
 </p>
 
 > [!WARNING]
-> ### ⚠️ PROJETO EM DESENVOLVIMENTO
-> **Atenção:** Este repositório e este arquivo `README.md` ainda estão em fase ativa de construção. 
-> - O código-fonte em C (`codigo.c`) está sendo refatorado e testado.
-> - Algumas seções e documentações contêm informações temporárias e incompletas.
-> - Alterações frequentes podem ocorrer até a versão final de entrega.
+> ### ⚠️ TRABALHO EM ANDAMENTO
+> **Aviso:** Esse repositório ainda está em construção!
+> - Nós ainda estamos desenvolvendo e testando o código principal em C (`codigo.c`).
+> - O texto do `README.md` também está incompleto e vamos adicionar mais coisas.
+> - Estamos arrumando os últimos detalhes para fechar o projeto e entregar até esta quinta-feira.
 
 > **Projeto Prático de Concorrência e Sincronização**  
 > Disciplina: Sistemas Operacionais (SO)  
 > Universidade do Estado do Rio Grande do Norte (UERN) — Campus Natal  
-> Professora: Artemísia Kimberlly Silva  
+> Professoras: Me. Gláucia Melissa Medeiros Campos e Artemísia Kimberlly Silva  
 
 ---
 
@@ -25,7 +25,7 @@
 
 | Foto / Avatar | Integrante | GitHub |
 | :---: | :--- | :--- |
-| <img src="https://github.com/github.png" width="50"> | **Antoniel da Silva Alves** | [@seu-user](https://github.com) |
+| <img src="https://github.com/github.png" width="50"> | **Antoniel da Silva Alves** | [@NielS2Dev](https://github.com/NielS2Dev) |
 | <img src="https://github.com/github.png" width="50"> | **Geovane Guilherme do Nascimento** | [@geovane2606](https://github.com/geovane2606) |
 | <img src="https://github.com/github.png" width="50"> | **Sayan Bruno da Silva Soares** | [@sayanbruno](https://github.com/sayanbruno) |
 
@@ -33,28 +33,30 @@
 
 ## 📌 Visão Geral do Problema
 
-O problema dos **Leitores e Escritores** é um modelo clássico de sincronização onde múltiplos fluxos de execução (*threads*) compartilham um mesmo recurso em memória RAM:
-* **Leitores ($R$):** Apenas consultam os dados. Podem executar concorrentemente sem restrições.
-* **Escritores ($W$):** Modificam o recurso compartilhado. Exigem **acesso exclusivo** (sem outros leitores nem outros escritores na seção crítica).
+O problema dos **Leitores e Escritores** é um clássico de concorrência. Nele, várias *threads* tentam acessar o mesmo dado na memória RAM ao mesmo tempo:
+* **Leitores ($R$):** Só leem o dado. Vários leitores podem ler juntos sem problema.
+* **Escritores ($W$):** Eles alteram o dado. Por isso, exigem **acesso exclusivo** (não pode ter outro escritor nem leitor lá dentro enquanto ele escreve).
 
-Sem mecanismos apropriados de sincronização, a interlevação imprevisível de instruções leva a **Condições de Corrida** e **Inconsistência de Dados**.
+Se a gente não sincronizar isso direito, as *threads* se atropelam. Isso gera a famosa **Condição de Corrida** e os dados ficam inconsistentes.
 
 ---
 
-## 💡 Estratégia de Solução & Arquitetura
+## 💡 Nossa Estratégia
 
-Para superar a fragilidade das soluções clássicas (que frequentemente causam *Starvation* nos escritores), implementamos um algoritmo justo baseado em **Fichas FIFO (Ticketing System)** utilizando a biblioteca `pthreads`:
+A solução clássica tem um problema chato: se novos leitores não pararem de chegar, o escritor nunca consegue entrar e fica travado para sempre (o famoso *Starvation* / Inanição).
 
-1. **1 Mutex Principal (`pthread_mutex_t`):** Garante acesso atômico à estrutura de estado e distribuição de fichas.
-2. **1 Variável de Condição (`pthread_cond_t`):** Faz com que as *threads* aguardem suspensas via `pthread_cond_wait`, eliminando o consumo indevido de CPU (*Busy Waiting* / *Spinlock*).
-3. **Fila de Fichas FIFO (`prox_ficha` / `vez`):** Atribui uma senha de atendimento sequencial por ordem de chegada. Nenhuma *thread* é ultrapassada, eliminando permanentemente a **Inanição (*Starvation*)** e garantindo **Progresso**.
+Para resolver isso, montamos uma lógica baseada em **Fichas FIFO** (como uma fila de banco) usando a biblioteca `pthreads` em C:
+
+1. **1 Mutex Principal (`pthread_mutex_t`):** Funciona como a nossa trava. Ele protege as variáveis e controla quem pode pegar a ficha.
+2. **1 Variável de Condição (`pthread_cond_t`):** Serve para fazer as *threads* dormirem (`pthread_cond_wait`) enquanto esperam a vez delas. Isso evita que o programa fique gastando CPU à toa em um loop infinito (*sem busy waiting*).
+3. **Fila de Fichas FIFO:** Cada *thread* pega uma ficha por ordem de chegada. Como ninguém fura a fila, garantimos que todo mundo vai ser atendido e o escritor não sofre *Starvation*.
 
 ---
 
 ## 📸 Demonstração do Sistema
 
-### 1. Execução Sincronizada (Modo Normal)
-> *O Mutex assegura a integridade das variáveis `a` e `b`. Os leitores consultam de forma simultânea e o escritor possui acesso exclusivo.*
+### 1. Execução Normal (Com Mutex)
+> *Aqui a trava funciona perfeitamente. Os leitores conseguem ler juntos e o escritor tem acesso exclusivo na vez dele.*
 
 <p align="center">
   <img src="https://i.ibb.co/xtYB5QHR/foto-001.png" alt="Log da Execução Normal" width="800"/>
@@ -62,8 +64,8 @@ Para superar a fragilidade das soluções clássicas (que frequentemente causam 
 
 ---
 
-### 2. O Teste do Caos (Sincronização Desativada)
-> *Ao compilar sem as primitivas de Mutex (`-DSEM_SINCRONIZACAO`), ocorrem trocas involuntárias de contexto durante as pausas, forçando anomalias de memória `[X] DADO INCONSISTENTE`.*
+### 2. O Teste do Caos (Sem Mutex)
+> *Se a gente compilar desativando a nossa trava (`-DSEM_SINCRONIZACAO`), vira bagunça. O leitor entra na hora errada e o terminal começa a gritar `[X] DADO INCONSISTENTE`.*
 
 <p align="center">
   <img src="https://i.ibb.co/N6pfhbq4/novo.png" alt="Log do Teste do Caos" width="800"/>
@@ -71,8 +73,8 @@ Para superar a fragilidade das soluções clássicas (que frequentemente causam 
 
 ---
 
-### 3. Monitoramento de Threads no `htop`
-> *Observação das threads em repouso (`Sleeping`) com `0.0%` de uso de CPU, confirmando a ausência de espera ocupada.*
+### 3. Monitoramento no `htop`
+> *Olhando as threads do programa no htop, a gente prova que elas ficam em repouso (`Sleeping`) com `0.0%` de CPU enquanto esperam. Ou seja, zero espera ocupada.*
 
 <p align="center">
   <img src="https://i.ibb.co/M5VfmLG4/foto-002.png" alt="Visualização das Threads no htop" width="800"/>
@@ -80,14 +82,14 @@ Para superar a fragilidade das soluções clássicas (que frequentemente causam 
 
 ---
 
-## ⚙️ Como Compilar e Executar
+## ⚙️ Como Compilar e Executar no Linux
 
-Certifique-se de estar em um ambiente baseado em Linux / POSIX com o compilador `gcc` e a biblioteca `pthreads` instalados.
+Se você for testar o código, é só usar os comandos abaixo no terminal:
 
-### 🟢 1. Compilação e Execução Normal (Com Sincronização)
+### 🟢 1. Modo Normal (Tudo funcionando)
 ```bash
-# Compilar o código fonte
+# Compilar o código
 gcc -Wall -pthread codigo.c -o le
 
-# Executar o programa
+# Rodar o programa
 ./le
