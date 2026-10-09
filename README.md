@@ -4,20 +4,32 @@
   <img src="https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white" alt="C" />
   <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux" />
   <img src="https://img.shields.io/badge/POSIX_pthreads-000000?style=for-the-badge&logo=gnu&logoColor=white" alt="POSIX" />
-  <img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow?style=for-the-badge" alt="Status" />
+  <img src="https://img.shields.io/badge/Status-Concluído-success?style=for-the-badge" alt="Status" />
 </p>
 
-> [!WARNING]
-> ### ⚠️ TRABALHO EM ANDAMENTO
-> **Aviso:** Esse repositório ainda está em construção!
-> - Nós ainda estamos desenvolvendo e testando o código principal em C (`codigo.c`).
-> - O texto do `README.md` também está incompleto e vamos adicionar mais coisas.
-> - Estamos arrumando os últimos detalhes para fechar o projeto e entregar até esta quinta-feira.
+> [!NOTE]
+> ### ✅ PROJETO FINALIZADO
+> **Atualização:** 08/10/2026 às 09:43  
+> Finalizamos o desenvolvimento e os testes do código. Chegamos à conclusão de que o nosso projeto está muito bom, cobrindo todos os requisitos de sincronização, e o repositório já está pronto para avaliação!
 
 > **Projeto Prático de Concorrência e Sincronização**  
 > Disciplina: Sistemas Operacionais (SO)  
 > Universidade do Estado do Rio Grande do Norte (UERN) — Campus Natal  
 > Professoras: Me. Gláucia Melissa Medeiros Campos e Artemísia Kimberlly Silva  
+
+---
+
+## 🎥 Vídeo de Apresentação
+
+> ⚠️ **Aviso:** Pode ser que o áudio do vídeo esteja um pouquinho baixo ou com um leve ruído ambiente, mas dá para acompanhar perfeitamente toda a explicação da lógica, do código e a demonstração rodando no terminal!
+
+<p align="center">
+  <iframe width="800" height="450" src="https://www.youtube.com/embed/ZQSDpOZDJJ0?si=vW0Pmv24LMeZngM8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</p>
+
+<p align="center">
+  <em>(Caso o player de vídeo não carregue diretamente no GitHub, <a href="https://youtu.be/ZQSDpOZDJJ0" target="_blank">clique aqui para assistir à apresentação no YouTube</a>).</em>
+</p>
 
 ---
 
@@ -34,8 +46,8 @@
 ## 📌 Visão Geral do Problema
 
 O problema dos **Leitores e Escritores** é um clássico de concorrência. Nele, várias *threads* tentam acessar o mesmo dado na memória RAM ao mesmo tempo:
-* **Leitores ($R$):** Só leem o dado. Vários leitores podem ler juntos sem problema.
-* **Escritores ($W$):** Eles alteram o dado. Por isso, exigem **acesso exclusivo** (não pode ter outro escritor nem leitor lá dentro enquanto ele escreve).
+- **Leitores ($R$):** Só leem o dado. Vários leitores podem ler juntos sem problema.
+- **Escritores ($W$):** Eles alteram o dado. Por isso, exigem **acesso exclusivo** (não pode ter outro escritor nem leitor lá dentro enquanto ele escreve).
 
 Se a gente não sincronizar isso direito, as *threads* se atropelam. Isso gera a famosa **Condição de Corrida** e os dados ficam inconsistentes.
 
@@ -88,8 +100,8 @@ Se você for testar o código, é só usar os comandos abaixo no terminal:
 
 ### 🟢 1. Modo Normal (Tudo funcionando)
 ```bash
-# Compilar o código
-gcc -Wall -pthread codigo.c -o le
+# Compilar o código de forma segura
+gcc -Wall -pthread uern_leitores.c -o le
 
 # Rodar o programa
 ./le
